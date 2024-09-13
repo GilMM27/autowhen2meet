@@ -11,7 +11,8 @@ const App = () => {
     return (
         <main>
             <img src={dogSrc} />
-            <button onClick={prueba}>jala??</button>
+            <button onClick={prueba} className="bg-blue-500 text-center font-bold" >jala??</button>
+            <p className="text-3xl">hola</p>
         </main>
     );
 };
