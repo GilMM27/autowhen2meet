@@ -45,11 +45,11 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/, // Add this rule for processing CSS files
+        test: /\.css$/,
         use: [
-          'style-loader',   // Injects styles into DOM
-          'css-loader',     // Interprets `@import` and `url()`
-          'postcss-loader', // Processes Tailwind via PostCSS
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
         ],
       },
     ],
