@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
+const webpack = require("webpack");
 const path = require("path");
 
 module.exports = {
@@ -26,6 +28,11 @@ module.exports = {
           to: path.resolve(__dirname, "dist"),
         },
       ],
+    }),
+    new Dotenv(),
+    new webpack.DefinePlugin({
+        'process.env.AZURE_CLIENT_ID': JSON.stringify(process.env.AZURE_CLIENT_ID),
+        'process.env.AZURE_AUTHORITY': JSON.stringify(process.env.AZURE_AUTHORITY),
     }),
   ],
   module: {
