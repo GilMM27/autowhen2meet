@@ -1,11 +1,14 @@
+const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
 const webpack = require("webpack");
-const path = require("path");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 module.exports = {
-  mode: "production",
+  mode: "development",
   target: "web",
   entry: {
     contentScript: "./src/content/index.ts",
@@ -64,4 +67,9 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx"],
   },
+  devtool: 'cheap-module-source-map',
+  stats: {
+    children: true,
+    errorDetails: true,
+  }
 };
