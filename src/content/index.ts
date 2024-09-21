@@ -159,8 +159,6 @@ async function getAvailability(times: string[], dates: string[], timezone: strin
     }
 }
 
-console.log('Content script running!');
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'autofill') {
         const { calendarProvider, timezone } = message;

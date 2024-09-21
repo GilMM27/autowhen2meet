@@ -43,25 +43,25 @@ const App = () => {
     }
 
     return (
-        <main className="w-80 h-fit relative bg-gradient-to-r from-black to-green-950 text-white flex flex-col items-center">
+        <main className="w-80 h-fit relative bg-gradient-to-r from-black to-green-950 text-white flex flex-col items-center font-code">
             <h1 className="text-3xl text-center w-full py-3 font-bold text-green-600">AutoWhen2Meet</h1>
             <p className="m-3 text-center text-lg">Fill in a when2meet with the free spaces on your calendar!</p>
 
             <p className="text-center">Select your calendar provider:</p>
-            <select value={calendarProvider} onChange={changeCalendar} className="text-black m-3 p-3 box-border w-60 mx-auto block">
+            <select value={calendarProvider} onChange={changeCalendar} className="text-black m-3 p-1 box-border w-60 mx-auto block">
                 {calendars.map((calendar, index) => (
                     <option key={index} value={calendar}>{calendar}</option>
                 ))}
             </select>
 
             <p className="text-center">Select your timezone:</p>
-            <select value={timezone} onChange={changeTimezone} className="text-black m-3 p-3 box-border w-60 mx-auto block">
+            <select value={timezone} onChange={changeTimezone} className="text-black m-3 p-1 box-border w-60 mx-auto block">
                 {timezones.map((timezone, index) => (
                     <option key={index} value={timezone}>{timezone}</option>
                 ))}
             </select>
 
-            <button onClick={test} className="text-xl text-center w-60 m-3 bg-blue-800 hover:bg-blue-700 transition duration-300 ease-in-out rounded-xl">Autofill!</button>
+            <button onClick={test} className="text-xl text-center w-40 m-3 bg-blue-800 hover:bg-blue-700 transition duration-300 ease-in-out rounded-xl">Autofill!</button>
             <p className="m-3 text-center text-sm w-full text-green-600">Developed by: <a href='https://github.com/GilMM27' target='_blank' rel='noopener noreferrer' className='font-bold'>GilMM27</a></p>
         </main>
     );
