@@ -29,6 +29,9 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.270",
+    "@types/gapi": "^0.0.47",
+    "@types/gapi.auth2": "^0.0.61",
+    "@types/gapi.client": "^1.0.8",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "copy-webpack-plugin": "^12.0.2",
@@ -47,6 +50,7 @@
     "@babel/preset-typescript": "^7.24.7",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@nextui-org/theme": "^2.2.11",
+    "@react-oauth/google": "^0.12.1",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "babel-loader": "^9.1.3",

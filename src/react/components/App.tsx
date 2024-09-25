@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const App = () => {
     const [calendarProvider, setCalendarProvider] = useState<string>('Outlook');
-    const calendars = ['Outlook'];
+    const calendars = ['Outlook', 'Google'];
 
     const [timezone, setTimezone] = useState<string>('America/Mexico_City');
     const timezones = [
@@ -34,12 +34,15 @@ const App = () => {
         setTimezone(event.target.value);
     };
 
-    function test() {
+    function autofill() {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs && tabs[0].id) {
                 chrome.tabs.sendMessage(tabs[0].id, { action: 'autofill', calendarProvider, timezone });
             }
         });
+
+        // 56216641853-1emfcl2dl1cuspkpfv6mq07i686trf5a.apps.googleusercontent.com
+        // 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
     }
 
     return (
@@ -61,7 +64,7 @@ const App = () => {
                 ))}
             </select>
 
-            <button onClick={test} className="text-xl text-center w-40 m-3 bg-blue-800 hover:bg-blue-700 transition duration-300 ease-in-out rounded-xl">Autofill!</button>
+            <button onClick={autofill} className="text-xl text-center w-40 m-3 bg-blue-800 hover:bg-blue-700 transition duration-300 ease-in-out rounded-xl">Autofill!</button>
             <p className="m-3 text-center text-sm w-full text-green-600">Developed by: <a href='https://github.com/GilMM27' target='_blank' rel='noopener noreferrer' className='font-bold'>GilMM27</a></p>
         </main>
     );
