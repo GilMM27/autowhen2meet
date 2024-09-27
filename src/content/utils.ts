@@ -26,4 +26,12 @@ function generate15MinIntervals(start: Date, end: Date) {
     return intervals;
 }
 
-export { convertTo24Hour, generate15MinIntervals };
+function formatDateToISO(dateString: string): string {
+    const date = new Date(dateString);
+    const year = String(new Date().getFullYear());
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+export { convertTo24Hour, generate15MinIntervals, formatDateToISO };

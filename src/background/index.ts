@@ -1,19 +1,3 @@
-function fetchGoogleCalendar(token: string) {
-  fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Google Calendar events:', data);
-  })
-  .catch((error) => {
-    console.error('Error fetching calendar events:', error);
-  });
-}
-
 function oauthSignIn() {
   return new Promise((resolve, reject) => {
     var manifest = chrome.runtime.getManifest();
@@ -48,23 +32,23 @@ function oauthSignIn() {
   });
 }
 
-async function SignIn() {
-  const token = await oauthSignIn();
-  if (token) {
-    console.log('Token:', token.toString());
-    fetchGoogleCalendar(token.toString());
+async function SignIn(sendResponse: (response?: any) => void) {
+  try {
+    const token = await oauthSignIn();
+    if (token) {
+      console.log('Token:', token);
+      sendResponse({ success: true, token: token });
+    }
+  } catch (error) {
+    console.error('Error during sign-in:', error);
   }
 }
 
 // Listen for messages from popup or content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'signInAndFetchCalendar') {
+  if (message.action === 'signInGoogle') {
     console.log('Attempting sign in');
-    // Attempt to sign in and fetch calendar
-    
-    SignIn();
-    
-    // Return true to indicate that the response will be sent asynchronously
+    SignIn(sendResponse);
     return true;
   }
 });

@@ -1,8 +1,9 @@
+import { getAvailabilityGoogle } from "./google";
 import { getAvailabilityOutlook } from "./outlook";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'autofill') {
-        const { calendarProvider, timezone } = message;
+        const { calendarProvider, selectedTimezone, selectedModifier } = message;
 
         let times: string[] = [];
         let dates: string[] = [];
@@ -55,10 +56,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         switch (calendarProvider) {
             case 'Outlook':
                 console.log('Outlook autofill');
-                getAvailabilityOutlook(times, dates, timezone);
+                getAvailabilityOutlook(times, dates, selectedTimezone);
                 break;
             case 'Google':
-                chrome.runtime.sendMessage({ action: 'signInAndFetchCalendar' });
+                console.log('Google autofill');
+                getAvailabilityGoogle(times, dates, selectedModifier);
                 break;
             default:
                 console.error('Calendar provider not recognized');

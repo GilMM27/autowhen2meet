@@ -1,5 +1,5 @@
 import { PublicClientApplication } from "@azure/msal-browser";
-import { generate15MinIntervals, convertTo24Hour } from "./utils";
+import { generate15MinIntervals, convertTo24Hour, formatDateToISO } from "./utils";
 
 const msalConfig = {
     auth: {
@@ -75,14 +75,6 @@ async function getCalendarEventsForWindow(accessToken: string, startDateTime: st
     );
     const events = await response.json();
     return events;
-}
-
-function formatDateToISO(dateString: string): string {
-    const date = new Date(dateString);
-    const year = String(new Date().getFullYear());
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
 }
 
 async function getAvailabilityOutlook(times: string[], dates: string[], timezone: string) {
