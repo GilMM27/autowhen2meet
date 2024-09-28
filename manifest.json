@@ -1,0 +1,35 @@
+{
+    "name": "autowhen2meet",
+    "version": "1.0.0",
+    "description": "A simple tool to automate the process of finding the best time for a meeting on When2Meet",
+    "manifest_version": 3,
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "scripting",
+        "identity",
+        "identity.email",
+        "storage",
+        "https://www.googleapis.com/"
+    ],
+    "oauth2": {
+        "client_id": "${GOOGLE_CLIENT_ID}",
+        "scopes": ["https://www.googleapis.com/auth/calendar.readonly"]
+    },
+    "key": "${CHROME_KEY}",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://*.when2meet.com/*"],
+            "js": ["contentScript.js"]
+        }
+    ],
+    "host_permissions": [
+        "https://www.googleapis.com/"
+    ]
+}
