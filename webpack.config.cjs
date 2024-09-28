@@ -29,13 +29,19 @@ module.exports = {
         {
           from: path.resolve(__dirname, "manifest.json"),
           to: path.resolve(__dirname, "dist"),
+          transform(content) {
+            // Replace ${GOOGLE_CLIENT_ID} with process.env.GOOGLE_CLIENT_ID from .env
+            return content.toString()
+              .replace(/\${GOOGLE_CLIENT_ID}/g, process.env.GOOGLE_CLIENT_ID)
+              .replace(/\${CHROME_KEY}/g, process.env.CHROME_KEY);
+          },
         },
       ],
     }),
     new Dotenv(),
     new webpack.DefinePlugin({
-        'process.env.AZURE_CLIENT_ID': JSON.stringify(process.env.AZURE_CLIENT_ID),
-        'process.env.AZURE_AUTHORITY': JSON.stringify(process.env.AZURE_AUTHORITY),
+      'process.env.AZURE_CLIENT_ID': JSON.stringify(process.env.AZURE_CLIENT_ID),
+      'process.env.AZURE_AUTHORITY': JSON.stringify(process.env.AZURE_AUTHORITY)
     }),
   ],
   module: {
