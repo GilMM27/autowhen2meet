@@ -9,7 +9,6 @@
         "scripting",
         "identity",
         "identity.email",
-        "storage",
         "https://www.googleapis.com/"
     ],
     "oauth2": {

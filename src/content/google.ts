@@ -39,7 +39,7 @@ function generateIntervals(date: string, timeMin: string, timeMax: string): stri
 }
 
 // Function to determine availability in 15-minute intervals
-function determineAvailability(events: any[], intervals: string[]): string[] {
+function determineAvailability(events: any[], intervals: string[]): { start: string, end: string, busy: boolean }[] {
   const availability = intervals.map(interval => {
     const intervalStart = new Date(interval);
     const intervalEnd = new Date(intervalStart);
@@ -51,14 +51,18 @@ function determineAvailability(events: any[], intervals: string[]): string[] {
       return (intervalStart < eventEnd && intervalEnd > eventStart);
     });
 
-    return isBusy ? 'busy' : 'free';
+    return {
+      start: intervalStart.toISOString(),
+      end: intervalEnd.toISOString(),
+      busy: isBusy,
+    };
   });
 
   return availability;
 }
 
 // Function to get availability from Google Calendar
-async function getAvailabilityGoogle(times: string[], dates: string[], modifier: string) {
+async function getAvailabilityGoogle(times: string[], dates: string[], modifier: string, startTime: string, endTime: string) {
   try {
     const token = await new Promise<string>((resolve, reject) => {
       chrome.runtime.sendMessage({ action: 'signInGoogle' }, (response) => {
@@ -72,16 +76,17 @@ async function getAvailabilityGoogle(times: string[], dates: string[], modifier:
 
     const elements = document.querySelectorAll('[id^="YouTime"]');
 
+    const firstTime24Hour = convertTo24Hour(times[0]) + ":00";
+    const lastTime24Hour = convertTo24Hour(times[times.length - 1]) + ":00";
+    
     for (const [dateIndex, date] of dates.entries()) {
-        const firstTime24Hour = convertTo24Hour(times[0]) + ":00";
-        const lastTime24Hour = convertTo24Hour(times[times.length - 1]) + ":00";
-
+        const isoDate = formatDateToISO(date);
         const events = await fetchCalendarEvents(token, formatDateToISO(date), firstTime24Hour, lastTime24Hour, modifier);
         const intervals = generateIntervals(formatDateToISO(date), firstTime24Hour, lastTime24Hour);
         const availability = determineAvailability(events, intervals);
 
         availability.forEach((slot, index) => {
-            if (slot === 'free') {
+            if (!slot.busy && new Date(slot.start) >= new Date(`${isoDate}T${startTime}:00`) && new Date(slot.end) <= new Date(`${isoDate}T${endTime}:00`)) {
                 const elementIndex = dateIndex + dates.length * index;
                 const element = elements[elementIndex] as HTMLElement;
 

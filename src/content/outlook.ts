@@ -77,25 +77,25 @@ async function getCalendarEventsForWindow(accessToken: string, startDateTime: st
     return events;
 }
 
-async function getAvailabilityOutlook(times: string[], dates: string[], timezone: string) {
+async function getAvailabilityOutlook(times: string[], dates: string[], timezone: string, startTime: string, endTime: string) {
     try {
         const accessToken = await getToken();
         const elements = document.querySelectorAll('[id^="YouTime"]');
+        const firstTime24Hour = convertTo24Hour(times[0]);
+        const lastTime24Hour = convertTo24Hour(times[times.length - 1]);
 
         for (const [dateIndex, date] of dates.entries()) {
-            const firstTime24Hour = convertTo24Hour(times[0]);
-            const lastTime24Hour = convertTo24Hour(times[times.length - 1]);
-
+            const isoDate = formatDateToISO(date);
             const availability = await getAvailabilityIn15MinIntervals(
                 accessToken,
-                formatDateToISO(date),
+                isoDate,
                 firstTime24Hour,
                 lastTime24Hour,
                 timezone
             );
 
             availability.forEach((slot, index) => {
-                if (!slot.busy) {
+                if (!slot.busy && new Date(slot.start) >= new Date(`${isoDate}T${startTime}:00`) && new Date(slot.end) <= new Date(`${isoDate}T${endTime}:00`)) {
                     const elementIndex = dateIndex + dates.length * index;
                     const element = elements[elementIndex] as HTMLElement;
 
