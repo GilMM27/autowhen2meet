@@ -81,8 +81,8 @@ async function getAvailabilityOutlook(times: string[], dates: string[], timezone
     try {
         const accessToken = await getToken();
         const elements = document.querySelectorAll('[id^="YouTime"]');
-        const firstTime24Hour = convertTo24Hour(times[0]);
-        const lastTime24Hour = convertTo24Hour(times[times.length - 1]);
+        const firstTime24Hour = convertTo24Hour(times[0], true);
+        const lastTime24Hour = convertTo24Hour(times[times.length - 1], false);
 
         for (const [dateIndex, date] of dates.entries()) {
             const isoDate = formatDateToISO(date);

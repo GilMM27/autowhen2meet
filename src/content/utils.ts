@@ -1,11 +1,15 @@
-function convertTo24Hour(time: string): string {
+function convertTo24Hour(time: string, isEarliest: boolean): string {
     const [timePart, modifier] = time.split(/\s+/);
     let [hours, minutes] = timePart.split(':').map(Number);
 
     if (modifier === 'PM' && hours !== 12) {
         hours += 12;
     } else if (modifier === 'AM' && hours === 12) {
-        hours = 0;
+        if (isEarliest) {
+            hours = 0;
+        } else {
+            hours = 24;
+        }
     }
 
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;

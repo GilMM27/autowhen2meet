@@ -12,11 +12,14 @@ function oauthSignIn() {
       '&redirect_uri=' + redirectUri +
       '&response_type=token' +
       '&scope=' + scopes
-
+    
+    // Launch the OAuth flow to get an access token
+    console.log('Launching OAuth flow for', url);
     chrome.identity.launchWebAuthFlow({
       'url': url,
       'interactive': true
     }, (redirectedTo) => {
+      console.log('Redirected to:', redirectedTo);
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message));
       } else if (redirectedTo) {
@@ -36,11 +39,11 @@ async function SignIn(sendResponse: (response?: any) => void) {
   try {
     const token = await oauthSignIn();
     if (token) {
-      console.log('Token:', token);
       sendResponse({ success: true, token: token });
     }
   } catch (error) {
     console.error('Error during sign-in:', error);
+    sendResponse({ success: false, error: error });
   }
 }
 

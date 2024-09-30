@@ -3,17 +3,17 @@
     "version": "1.0.0",
     "description": "A simple tool to automate the process of finding the best time for a meeting on When2Meet",
     "manifest_version": 3,
-    "permissions": [
-        "tabs",
-        "activeTab",
-        "scripting",
-        "identity",
-        "identity.email",
-        "https://www.googleapis.com/"
-    ],
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "permissions": ["identity"],
     "oauth2": {
         "client_id": "${GOOGLE_CLIENT_ID}",
-        "scopes": ["https://www.googleapis.com/auth/calendar.readonly"]
+        "scopes": [
+            "https://www.googleapis.com/auth/calendar.readonly"
+        ]
     },
     "key": "${CHROME_KEY}",
     "action": {

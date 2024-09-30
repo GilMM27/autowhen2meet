@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronRightIcon } from 'lucide-react';
 
 const timezones = [
@@ -18,21 +18,29 @@ const timezones = [
   'Asia/Novosibirsk', 'Asia/Shanghai', 'Asia/Krasnoyarsk', 'Asia/Singapore', 'Australia/Perth', 'Asia/Taipei',
   'Asia/Ulaanbaatar', 'Asia/Irkutsk', 'Asia/Tokyo', 'Asia/Seoul', 'Australia/Adelaide', 'Australia/Darwin',
   'Australia/Brisbane', 'Australia/Sydney', 'Pacific/Port_Moresby', 'Australia/Hobart', 'Asia/Yakutsk',
-  'Pacific/Guadalcanal', 'Asia/Vladivostok', 'Pacific/Auckland', 'Etc/GMT-12', 'Pacific/Fiji', 'Asia/Magadan',
-  'Pacific/Tongatapu', 'Pacific/Apia', 'Pacific/Kiritimati'
+  'Pacific/Guadalcanal', 'Asia/Vladivostok', 'Pacific/Auckland', 'Etc/GMT-12', 'Pacific/Fiji'
 ];
 
 const timezonesModifier = [
-  '+12:00', '+11:00', '-10:00', '-09:00', '-08:00', '-07:00', '-07:00', '-07:00', '-06:00', '-06:00',
-  '-06:00', '-06:00', '-06:00', '-05:00', '-05:00', '-05:00', '-05:00', '-04:00', '-04:00', '-04:00',
-  '-04:00', '-04:00', '-03:30', '-03:00', '-03:00', '-03:00', '-03:00', '-03:00', '-02:00', '-01:00',
-  '-01:00', '00:00', '00:00', '00:00', '+01:00', '+01:00', '+01:00', '+01:00', '+01:00', '+01:00',
-  '+02:00', '+02:00', '+02:00', '+02:00', '+02:00', '+02:00', '+02:00', '+02:00', '+02:00', '+02:00',
-  '+03:00', '+03:00', '+03:30', '+04:00', '+04:00', '+04:00', '+04:00', '+04:00', '+04:00', '+04:00',
-  '+04:30', '+05:00', '+05:00', '+05:30', '+05:30', '+05:45', '+06:00', '+06:00', '+06:00', '+06:30',
-  '+07:00', '+07:00', '+08:00', '+08:00', '+08:00', '+08:00', '+08:00', '+08:00', '+09:00', '+09:00',
-  '+09:30', '+09:30', '+10:00', '+10:00', '+10:00', '+10:00', '+10:00', '+10:00', '+11:00', '+11:00',
-  '+12:00', '+12:00', '+12:00', '+13:00', '+13:00', '+14:00'
+  '+12:00', '+11:00', '-10:00', '-09:00', '-08:00',
+  '-07:00', '-07:00', '-07:00', '-06:00', '-06:00',
+  '-05:00', '-06:00', '-06:00', '-05:00', '-05:00',
+  '-05:00', '-04:30', '-04:00', '-04:00', '-04:00',
+  '-04:00', '-03:00', '-03:00', '-03:00', '-03:00',
+  '-03:00', '-03:00', '-02:00', '-01:00', '-01:00',
+  '+00:00', '+00:00', '+00:00', '+00:00', '+01:00',
+  '+01:00', '+01:00', '+01:00', '+01:00', '+01:00',
+  '+01:00', '+02:00', '+02:00', '+02:00', '+02:00',
+  '+02:00', '+02:00', '+02:00', '+03:00', '+03:00',
+  '+03:30', '+04:00', '+04:00', '+04:00', '+04:00',
+  '+04:00', '+04:00', '+04:00', '+04:30', '+05:00',
+  '+05:00', '+05:00', '+05:30', '+05:30', '+05:45',
+  '+06:00', '+06:00', '+05:00', '+06:30', '+07:00',
+  '+07:00', '+08:00', '+07:00', '+08:00', '+08:00',
+  '+08:00', '+08:00', '+08:00', '+09:00', '+09:00',
+  '+09:30', '+09:30', '+10:00', '+10:00', '+10:00',
+  '+10:00', '+09:00', '+11:00', '+10:00', '+12:00',
+  '+12:00', '+13:00', '+12:00', '+13:00', '+14:00'
 ];
 
 export default function Component() {
@@ -45,10 +53,12 @@ export default function Component() {
   const [showAdditionalSelects, setShowAdditionalSelects] = useState(false);
   const [startTime, setStartTime] = useState<string>('00:00');
   const [endTime, setEndTime] = useState<string>('24:00');
+  const [endTimeSlots, setEndTimeSlots] = useState<string[]>([]);
 
   const timezonesWithModifiers: [string, string][] = timezones.map((timezone, index) => [timezone, timezonesModifier[index]]);
 
   const timeSlots = useMemo(() => {
+    // Generate time slots in 15-minute intervals
     const slots = [];
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
@@ -58,6 +68,31 @@ export default function Component() {
     slots.push('24:00');
     return slots;
   }, []);
+
+  const generateEndTimeSlots = (start: string) => {
+    const [startHour, startMinute] = start.split(':').map(Number);
+    const slots = [];
+    let hour = startHour;
+    let minute = startMinute + 15;
+
+    if (minute >= 60) {
+      hour += 1;
+      minute -= 60;
+    }
+
+    for (; hour < 24; hour++) {
+      for (; minute < 60; minute += 15) {
+        slots.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+      }
+      minute = 0; // Reset minute to 0 after the first hour
+    }
+    slots.push('24:00');
+    return slots;
+  };
+
+  useEffect(() => {
+    setEndTimeSlots(generateEndTimeSlots(startTime));
+  }, [startTime]);
 
   const changeCalendar = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCalendarProvider(event.target.value);
@@ -76,6 +111,7 @@ export default function Component() {
   };
 
   function autofill() {
+    // Send message to content script to autofill the when2meet
     if (typeof chrome !== 'undefined' && chrome.tabs) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs && tabs[0].id) {
@@ -136,7 +172,7 @@ export default function Component() {
             onChange={(e) => setEndTime(e.target.value)} 
             className="text-black m-3 p-1 box-border w-60 mx-auto block focus:outline-none"
           >
-            {timeSlots.map((slot, index) => (
+            {endTimeSlots.map((slot, index) => (
               <option key={index} value={slot}>{slot}</option>
             ))}
           </select>

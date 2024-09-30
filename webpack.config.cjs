@@ -30,11 +30,14 @@ module.exports = {
           from: path.resolve(__dirname, "manifest.json"),
           to: path.resolve(__dirname, "dist"),
           transform(content) {
-            // Replace ${GOOGLE_CLIENT_ID} with process.env.GOOGLE_CLIENT_ID from .env
             return content.toString()
               .replace(/\${GOOGLE_CLIENT_ID}/g, process.env.GOOGLE_CLIENT_ID)
               .replace(/\${CHROME_KEY}/g, process.env.CHROME_KEY);
           },
+        },
+        {
+          from: path.resolve(__dirname, "icons"),
+          to: path.resolve(__dirname, "dist/icons"),
         },
       ],
     }),

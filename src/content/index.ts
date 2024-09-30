@@ -10,11 +10,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         const youGrid = document.getElementById('YouGrid');
         if (youGrid) {
-            const directChildren = youGrid.querySelectorAll(':scope > div'); // Direct children only
+            // Get the direct children of the YouGrid element
+            const directChildren = youGrid.querySelectorAll(':scope > div');
 
             // Check if there are at least 3 direct child divs
             if (directChildren.length >= 3) {
-                // Get the times.
+                // Get the times
                 const secondDiv = directChildren[1];
                 const timeDivs = Array.from(secondDiv.querySelectorAll('div'));
                 times = timeDivs.map(div => {
@@ -24,13 +25,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     return null;
                 }).filter((time): time is string => time !== null);
                 times = times.filter((_, index) => index % 2 === 0); // Filter out every other time
-                console.log("times: ", times);
 
-                // Get the dates.
+                // Get the dates
                 const thirdDiv = directChildren[2];
                 const divs = Array.from(thirdDiv.querySelectorAll('div'))
                     .filter(div => div.id !== 'YouGridSlots'); // Exclude the div with id 'YouGridSlots'
-
+                // Extract the text from the direct children divs
                 dates = divs.map(div => {
                     if (!div.firstChild?.textContent) return null; // Skip if null
                     const cleanedText = div.firstChild && div.firstChild.nodeType === Node.TEXT_NODE
@@ -43,8 +43,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     return null; // Skip if no direct text
                 }).filter((date): date is string => date !== null); // Remove null values and ensure type is string
                 dates = dates.filter((_, index) => index % 2 === 0); // Filter out every other date
-
-                console.log(dates); // Outputs the array of texts inside quotes
             } else {
                 console.error('There are not enough direct child divs inside YouGrid');
             }
@@ -52,7 +50,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.error('Element with id YouGrid not found');
         }
 
-        // Check the calendar and click the available slots
+        // Check the user's calendar choice and click the available slots
         switch (calendarProvider) {
             case 'Outlook':
                 console.log('Outlook autofill');
